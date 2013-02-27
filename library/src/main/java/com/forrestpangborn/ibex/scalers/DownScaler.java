@@ -10,7 +10,7 @@ public class DownScaler extends AImageScaler {
 		int bWidth = bmp.getWidth();
 		int bHeight = bmp.getHeight();
 		
-		if (bWidth == width && bHeight == height) {
+		if (bWidth == width || bHeight == height) {
 			ret = bmp;
 		} else if (bWidth > width || bHeight > height) {
 			float pct = Math.min(width / (float)bWidth, height / (float)bHeight);

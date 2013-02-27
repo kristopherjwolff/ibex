@@ -106,7 +106,7 @@ public class BidirectionalScalerTest extends TestCase {
 	}
 	
 	@Test
-	public void testNoScaleDownOnSameWidth() {
+	public void testNoScaleDownOnSameWidthGreaterHeight() {
 		Bitmap orig = Bitmap.createBitmap(20, 40, Config.ARGB_8888);
 		Bitmap bmp = scaler.scale(orig, 20, 20);
 		assertEquals(20, bmp.getWidth());
@@ -114,7 +114,7 @@ public class BidirectionalScalerTest extends TestCase {
 	}
 	
 	@Test
-	public void testNoScaleDownOnSameHeight() {
+	public void testNoScaleDownOnGreaterWidthSameHeight() {
 		Bitmap orig = Bitmap.createBitmap(40, 20, Config.ARGB_8888);
 		Bitmap bmp = scaler.scale(orig, 20, 20);
 		assertEquals(40, bmp.getWidth());

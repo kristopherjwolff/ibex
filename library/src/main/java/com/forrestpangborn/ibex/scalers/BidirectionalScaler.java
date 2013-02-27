@@ -9,8 +9,8 @@ public class BidirectionalScaler extends AImageScaler {
 		Bitmap ret = null;
 		int bWidth = bmp.getWidth();
 		int bHeight = bmp.getHeight();
-		
-		if (bWidth == width && bHeight == height) {
+
+		if (bWidth == width || bHeight == height) {
 			ret = bmp;
 		} else if (bWidth > width || bHeight > height) {
 			ret = new DownScaler().scale(bmp, width, height);

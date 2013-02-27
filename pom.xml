@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.forrestpangborn</groupId>
+	<artifactId>ibex-parent</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	
+	<name>Ibex (Parent)</name>
+	<description>TODO: description</description>
+	<url>http://www.google.com</url>
+	
+	<modules>
+		<module>library</module>
+		<module>sample</module>
+	</modules>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<android.version>4.1.1.4</android.version>
+		<android.platform>16</android.platform>
+		<android.support.version>11</android.support.version>
+		<junit.version>4.10</junit.version>
+		<disklrucache.version>1.3.1</disklrucache.version>
+		<google-http-client.version>1.13.1-beta</google-http-client.version>
+		<robolectric.version>1.2</robolectric.version>
+	</properties>
+	
+	<scm>
+		<url>http://github.com/square/ibex/</url>
+		<connection>scm:git:git://github.com/forrestpangborn/Ibex.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:forrestpangborn/Ibex.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/forrestpangborn/Ibex/issues</url>
+	</issueManagement>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+		
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>android</artifactId>
+				<version>${android.version}</version>
+				<scope>provided</scope>
+			</dependency>
+		
+			<dependency>
+				<groupId>android.support</groupId>
+				<artifactId>compatibility-v4</artifactId>
+				<version>${android.support.version}</version>
+			</dependency>
+		
+			<dependency>
+			    <groupId>com.jakewharton</groupId>
+			    <artifactId>disklrucache</artifactId>
+			    <version>${disklrucache.version}</version>
+			</dependency>
+		
+			<dependency>
+				<groupId>com.google.http-client</groupId>
+				<artifactId>google-http-client</artifactId>
+				<version>${google-http-client.version}</version>
+			</dependency>
+		
+			<dependency>
+				<groupId>com.google.http-client</groupId>
+				<artifactId>google-http-client-android</artifactId>
+				<version>${google-http-client.version}</version>
+			</dependency>
+		
+			<dependency>
+				<groupId>com.pivotallabs</groupId>
+				<artifactId>robolectric</artifactId>
+				<version>${robolectric.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

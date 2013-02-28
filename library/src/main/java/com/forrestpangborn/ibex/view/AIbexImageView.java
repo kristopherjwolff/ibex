@@ -15,41 +15,23 @@ import com.forrestpangborn.ibex.util.ImageMetadata;
 
 public abstract class AIbexImageView extends ImageView {
 	
+	private String imageUrl;
 	private BroadcastReceiver imageLoadedReceiver;
-	private String url;
-	private String key;
 	
 	public AIbexImageView(Context context, AttributeSet set, int defStyle) {
 		super(context, set, defStyle);
 	}
 	
-	public void setUrl(String url) {
-		if (url == null) {
-			if (imageLoadedReceiver != null) {
-				LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(imageLoadedReceiver);
-				imageLoadedReceiver = null;
-			}
-		} else if ((getWidth() > 0 && getHeight() > 0) && this.url != url) {
-			loadImage();
-		}
-		this.url = url;
-	}
-	
-	public void setKey(String key) {
-		this.key = key;
-	}
-	
-	public void setKeyAndUrl(String url, String key) {
-		setKey(key);
-		setUrl(url);
-	}
-	
 	protected abstract ComponentName getServiceComponentName(Context context);
+	protected abstract int getMinWidth();
+	protected abstract int getMinHeight();
+	protected abstract String getUrl();
+	protected abstract String getKey();
 
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		if (w > 0 && h > 0 && url != null) {
+		if (w > 0 && h > 0) {
 			loadImage();
 		}
 	}
@@ -63,15 +45,31 @@ public abstract class AIbexImageView extends ImageView {
 		}
 	}
 	
-	private void loadImage() {
-		if (url != null) {
+	protected ImageMetadata getImageMetadata() {
+		return new ImageMetadata(getWidth(), getHeight(), getMinWidth(), getMinHeight(), getUrl(), getKey(), getScaleType());
+	}
+	
+	protected void loadImage() {
+		String url = getUrl();
+		if (url != null && !url.equals(imageUrl)) {
+			Context context = getContext();
+			if (imageUrl != null) {
+				Intent intent = new Intent();
+				intent.setComponent(getServiceComponentName(context));
+				intent.setAction(AImageLoadingService.ACTION_CANCEL_REQUEST);
+				intent.putExtra(AImageLoadingService.EXTRA_METADATA, getImageMetadata());
+				
+				context.startService(intent);
+				imageUrl = null;
+			}
+			
 			if (imageLoadedReceiver == null) {
 				imageLoadedReceiver = new BroadcastReceiver() {
 					@Override
 					public void onReceive(Context context, Intent intent) {
 						Bitmap bmp = (Bitmap)intent.getParcelableExtra(AImageLoadingService.EXTRA_BITMAP);
 						String loadedUrl = intent.getStringExtra(AImageLoadingService.EXTRA_URL);
-						if (bmp.getWidth() == getWidth() && bmp.getHeight() == getHeight() && url != null && url.equals(loadedUrl)) {
+						if (loadedUrl != null &&  getUrl() != null && loadedUrl.equals(getUrl())) {
 							LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(this);
 							imageLoadedReceiver = null;
 							setImageBitmap(bmp);
@@ -82,13 +80,13 @@ public abstract class AIbexImageView extends ImageView {
 				LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(imageLoadedReceiver, filter);
 			}
 			
-			Context context = getContext();
-			ImageMetadata metadata = new ImageMetadata(getWidth(), getHeight(), -1, -1, url, key, getScaleType());
 			Intent intent = new Intent();
 			intent.setComponent(getServiceComponentName(context));
-			intent.putExtra(AImageLoadingService.EXTRA_METADATA, metadata);
+			intent.setAction(AImageLoadingService.ACTION_REQUEST_IMAGE);
+			intent.putExtra(AImageLoadingService.EXTRA_METADATA, getImageMetadata());
 			
 			context.startService(intent);
+			imageUrl = url;
 		}
 	}
 }

@@ -7,6 +7,12 @@
 	android:orientation="horizontal"
 	android:gravity="center">
     
+    <ImageView 
+        android:id="@android:id/icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#FF888888"/>
+    
     <TextView
         android:id="@android:id/text1"
         android:layout_width="wrap_content"

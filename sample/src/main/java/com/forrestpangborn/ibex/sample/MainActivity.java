@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -75,11 +77,19 @@ public class MainActivity extends Activity {
 					convertView.setTag(TAG_LIST_ITEM);
 				}
 				
+				int progress = seekbar.getProgress();
+				
+				ImageView image = (ImageView)convertView.findViewById(android.R.id.icon);
+				LayoutParams params = image.getLayoutParams();
+				params.width = progress;
+				params.height = progress;
+				image.setLayoutParams(params);
+				
 				TextView text1 = (TextView)convertView.findViewById(android.R.id.text1);
 				text1.setText(getItem(position));
 				
 				TextView text2 = (TextView)convertView.findViewById(android.R.id.text2);
-				text2.setText(String.valueOf(seekbar.getProgress()));
+				text2.setText(String.valueOf(progress));
 				return convertView;
 			}
 		};

@@ -91,6 +91,8 @@ public class ImageLoadingTask {
 				bmp = orig;
 			} else {
 				AImageScaler scaler;
+				
+				// TODO : centerCrop scaler
 				switch (scaleType) {
 					case CENTER_INSIDE:
 						scaler = new DownScaler();

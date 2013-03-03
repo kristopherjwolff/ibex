@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_above="@android:id/content"/>
+    
+     <LinearLayout
+        android:id="@android:id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="20dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="#FF444444">
+        
+        <SeekBar 
+	        android:id="@+id/seek_bar"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:paddingRight="30dp"
+	        android:max="500"/>
+    
+	    <TextView
+	        android:id="@android:id/text1"
+	        android:layout_width="50dp"
+	        android:layout_height="wrap_content"/>
+        
+    </LinearLayout>
+    
+</RelativeLayout>

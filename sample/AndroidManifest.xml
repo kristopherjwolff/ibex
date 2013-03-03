@@ -5,13 +5,21 @@
           android:versionName="1.3.3"
           package="com.forrestpangborn.ibex.sample">
 
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="15"/>
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="17"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application
-            android:label="sample">
-
+    <application 
+        android:label="Ibex Sample"
+        android:allowBackup="false">
+        
+		<activity android:name="com.forrestpangborn.ibex.sample.MainActivity">
+		    <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+		</activity>
+		
     </application>
 
 </manifest>

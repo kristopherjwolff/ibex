@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project 
 	xmlns="http://maven.apache.org/POM/4.0.0" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,14 +9,14 @@
 	<groupId>com.forrestpangborn</groupId>
 	<artifactId>ibex</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 	<name>Ibex</name>
 	<url>http://www.google.com</url>
 	
 	<parent>
 		<groupId>com.forrestpangborn</groupId>
 		<artifactId>ibex-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 

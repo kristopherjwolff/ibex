@@ -1,4 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Ibex sample</string>
+
+    <string name="app_name">Ibex sample</string>
+
+    <string-array name="image_urls">
+        <item>http://distilleryimage5.s3.amazonaws.com/af0a1de082f511e2a98422000a9f1513_7.jpg</item>
+        <item>http://distilleryimage1.s3.amazonaws.com/a13d1cd07a3f11e28c4722000a9f1966_7.jpg</item>
+        <item>http://distilleryimage5.s3.amazonaws.com/e354ea687a3e11e2bb0f22000a1fbc94_7.jpg</item>
+        <item>http://distilleryimage5.s3.amazonaws.com/d5589c6a78a511e2b9fd22000a1fbc16_7.jpg</item>
+        <item>http://distilleryimage0.s3.amazonaws.com/7792c7585f8811e2aee522000a9f15b9_7.jpg</item>
+        <item>http://distilleryimage8.s3.amazonaws.com/89e660e04d3611e285b022000a9f15de_7.jpg</item>
+        <item>http://distilleryimage6.s3.amazonaws.com/3362f5804b2e11e28b9422000a1f8af5_7.jpg</item>
+        <item>http://distilleryimage11.s3.amazonaws.com/a2f722b649aa11e2876122000a9f130b_7.jpg</item>
+        <item>http://distilleryimage5.s3.amazonaws.com/479b6830209411e2b9d422000a1fa429_7.jpg</item>
+        <item>http://distilleryimage2.s3.amazonaws.com/ab89660a1d6311e2871d22000a1f92db_7.jpg</item>
+        <item>http://distilleryimage2.s3.amazonaws.com/54f02f4217e411e2a74f12313820474c_7.jpg</item>
+        <item>http://distilleryimage1.s3.amazonaws.com/88ae6cdc158611e28fe322000a1c8660_7.jpg</item>
+        <item>http://distilleryimage5.s3.amazonaws.com/29b8cab80c5511e28a2e22000a1ea02d_7.jpg</item>
+        <item>http://distilleryimage2.s3.amazonaws.com/be332946052911e2abf922000a1c03e2_7.jpg</item>
+        <item>http://distilleryimage3.s3.amazonaws.com/3c8d7f8a051111e29df022000a1c8832_7.jpg</item>
+        <item>http://distilleryimage8.s3.amazonaws.com/e04bb29004d511e2899a12313804ce11_7.jpg</item>
+        <item>http://distilleryimage11.s3.amazonaws.com/94ae203e045d11e283b822000a1e8a6e_7.jpg</item>
+        <item>http://distilleryimage10.s3.amazonaws.com/258246ae044911e294d322000a1cbaf4_7.jpg</item>
+        <item>http://distilleryimage5.s3.amazonaws.com/6cdd7992043a11e292a022000a1e8849_7.jpg</item>
+        <item>http://distilleryimage9.s3.amazonaws.com/d3385d30013b11e2bfc622000a1cde39_7.jpg</item>
+        <item>http://distilleryimage6.s3.amazonaws.com/cf023b6c008411e2b74c22000a1de2a7_7.jpg</item>
+        <item>http://distilleryimage11.s3.amazonaws.com/62105d4efef011e1bba622000a1de773_7.jpg</item>
+        <item>http://distilleryimage4.s3.amazonaws.com/728003bafa2111e181dd1231381b5f1f_7.jpg</item>
+        <item>http://distilleryimage8.s3.amazonaws.com/45280f96f63b11e1880f22000a1de7aa_7.jpg</item>
+        <item>http://distilleryimage9.s3.amazonaws.com/92f60378f48c11e1a68422000a1e960b_7.jpg</item>
+        <item>http://distilleryimage6.s3.amazonaws.com/3686f0d2e4f311e1b71422000a1e9f9b_7.jpg</item>
+        <item>http://distilleryimage10.s3.amazonaws.com/8e54c77acfc311e1a1fa22000a1cbada_7.jpg</item>
+        <item>http://distilleryimage11.s3.amazonaws.com/6168b2f2cc7211e1a8761231381b4856_7.jpg</item>
+        <item>http://distilleryimage0.s3.amazonaws.com/dcde74e8cbdd11e1abd612313810100a_7.jpg</item>
+        <item>http://distilleryimage8.s3.amazonaws.com/28c8e7f2c86a11e1a23c22000a1c9e05_7.jpg</item>
+        <item>http://distilleryimage3.s3.amazonaws.com/9d646df4c62e11e18cf91231380fd29b_7.jpg</item>
+        <item>http://distilleryimage6.s3.amazonaws.com/215f08c6bda611e1b9f1123138140926_7.jpg</item>
+        <item>http://distilleryimage1.s3.amazonaws.com/d3e123b8a79d11e19dc71231380fe523_7.jpg</item>
+        <item>http://distilleryimage10.s3.amazonaws.com/d060b63e9d8611e18bb812313804a181_7.jpg</item>
+        <item>http://distilleryimage10.s3.amazonaws.com/9c5420d89d5411e181bd12313817987b_7.jpg</item>
+        <item>http://distilleryimage5.s3.amazonaws.com/84db99a69bdb11e1a9f71231382044a1_7.jpg</item>
+        <item>http://distilleryimage1.s3.amazonaws.com/7e128f549acc11e180c9123138016265_7.jpg</item>
+        <item>http://distilleryimage3.s3.amazonaws.com/0028c5c69a4611e19e4a12313813ffc0_7.jpg</item>
+        <item>http://distilleryimage10.s3.amazonaws.com/3bdc8550999011e1abb012313813106f_7.jpg</item>
+        <item>http://distilleryimage6.s3.amazonaws.com/2a614cb4993811e181bd12313817987b_7.jpg</item>
+        <item>http://distilleryimage5.s3.amazonaws.com/3d6f0e9e98cb11e1af7612313813f8e8_7.jpg</item>
+        <item>http://distilleryimage11.s3.amazonaws.com/5c48c69e973011e1a92a1231381b6f02_7.jpg</item>
+        <item>http://distilleryimage2.s3.amazonaws.com/2ad77c6e96df11e1a39b1231381b7ba1_7.jpg</item>
+        <item>http://distilleryimage1.s3.amazonaws.com/812a4780965411e1a39b1231381b7ba1_7.jpg</item>
+        <item>http://distilleryimage6.s3.amazonaws.com/14d65438873c11e1af7612313813f8e8_7.jpg</item>
+        <item>http://distilleryimage2.s3.amazonaws.com/d2da2ba4873611e1b9f1123138140926_7.jpg</item>
+        <item>http://distilleryimage5.s3.amazonaws.com/ce9c6af6803911e1ab011231381052c0_7.jpg</item>
+        <item>http://distilleryimage6.s3.amazonaws.com/a76884be7e7d11e18cf91231380fd29b_7.jpg</item>
+        <item>http://distilleryimage1.s3.amazonaws.com/a1033ba67df011e1989612313815112c_7.jpg</item>
+    </string-array>
+
 </resources>

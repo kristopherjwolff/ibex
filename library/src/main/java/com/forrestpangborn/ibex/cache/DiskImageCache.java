@@ -1,31 +1,29 @@
 package com.forrestpangborn.ibex.cache;
 
-import static com.forrestpangborn.ibex.util.DataUtils.buildByteArray;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
+import com.google.common.io.ByteStreams;
 import com.jakewharton.DiskLruCache;
 import com.jakewharton.DiskLruCache.Editor;
 import com.jakewharton.DiskLruCache.Snapshot;
 
 public class DiskImageCache implements ImageCache {
-
-	private static final long CACHE_SIZE = 3000000L;
 	
 	private DiskLruCache cache;
 	
-	public DiskImageCache(Context context) {
+	public DiskImageCache(Context context, long size) {
 		int versionCode = -1;
 		try {
 			versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-			cache = DiskLruCache.open(context.getCacheDir(), versionCode, 1, CACHE_SIZE);
+			cache = DiskLruCache.open(context.getCacheDir(), versionCode, 1, size);
 		} catch (NameNotFoundException ex) {
-			// this will not happen.
+			// TODO : this will not happen????
 		} catch (IOException ex) {
 			Log.e("Ibex", "IOException attempting to open DiskLruCache!", ex);
 		}
@@ -36,9 +34,11 @@ public class DiskImageCache implements ImageCache {
 		if (data != null && key != null) {
 			try {
 				Editor editor = cache.edit(key);
-				OutputStream os = editor.newOutputStream(0);
-				os.write(data);
-				editor.commit();
+				if (editor != null) {
+					OutputStream output = editor.newOutputStream(0);
+					output.write(data);
+					editor.commit();
+				}
 			} catch (IOException ex) {
 				// nada!
 			}
@@ -52,7 +52,9 @@ public class DiskImageCache implements ImageCache {
 		try {
 			Snapshot snapshot = cache.get(key);
 			if (snapshot != null) {
-				ret = buildByteArray(snapshot.getInputStream(0));
+				InputStream input = snapshot.getInputStream(0);
+				ret = ByteStreams.toByteArray(input);
+				input.close();
 			}
 		} catch (IOException ex) {
 			ret = null;
@@ -68,6 +70,5 @@ public class DiskImageCache implements ImageCache {
 		} catch (IOException ex) {
 			Log.e("Ibex", "Exception trying to close DiskLruCache!", ex);
 		}
-		
 	}
 }

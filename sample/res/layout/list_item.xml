@@ -7,17 +7,11 @@
 	android:orientation="horizontal"
 	android:gravity="center">
     
-    <ImageView 
+    <com.forrestpangborn.ibex.sample.SampleImageView 
         android:id="@android:id/icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#FF888888"/>
-    
-    <TextView
-        android:id="@android:id/text1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"/>
+        android:scaleType="fitXY"/>
     
     <TextView
         android:id="@android:id/text2"
@@ -25,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="10dp"
-        android:gravity="right"/>
+        android:gravity="right"
+        android:textIsSelectable="false"/>
 
 </LinearLayout>

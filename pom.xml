@@ -8,7 +8,7 @@
 	
 	<groupId>com.forrestpangborn</groupId>
 	<artifactId>ibex-parent</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>Ibex (Parent)</name>
@@ -32,7 +32,7 @@
 	</properties>
 	
 	<scm>
-		<url>http://github.com/square/ibex/</url>
+		<url>http://github.com/forrestpangborn/ibex/</url>
 		<connection>scm:git:git://github.com/forrestpangborn/ibex.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com:forrestpangborn/ibex.git</developerConnection>
 		<tag>HEAD</tag>
@@ -89,6 +89,7 @@
 				<version>${robolectric.version}</version>
 				<scope>test</scope>
 			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 

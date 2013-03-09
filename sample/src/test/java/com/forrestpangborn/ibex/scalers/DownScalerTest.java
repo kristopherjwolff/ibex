@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 
+import com.forrestpangborn.ibex.scaler.DownScaler;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
@@ -120,5 +121,12 @@ public class DownScalerTest extends TestCase {
 		Bitmap bmp = scaler.scale(orig, 12, 12);
 		assertEquals(4, bmp.getWidth());
 		assertEquals(12, bmp.getHeight());
+	}
+	
+	@Test
+	public void testNullBitmap() {
+		Bitmap orig = null;
+		Bitmap bmp = scaler.scale(orig, 20, 20);
+		assertNull(bmp);
 	}
 }

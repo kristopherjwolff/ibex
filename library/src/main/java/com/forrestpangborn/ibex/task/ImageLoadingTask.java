@@ -1,7 +1,5 @@
 package com.forrestpangborn.ibex.task;
 
-import static com.forrestpangborn.ibex.util.DataUtils.buildByteArray;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -14,63 +12,76 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ImageView.ScaleType;
 
 import com.forrestpangborn.ibex.cache.ImageCache;
-import com.forrestpangborn.ibex.scalers.AImageScaler;
-import com.forrestpangborn.ibex.scalers.BidirectionalScaler;
-import com.forrestpangborn.ibex.scalers.DownScaler;
-import com.forrestpangborn.ibex.service.AImageLoadingService;
-import com.forrestpangborn.ibex.util.ImageMetadata;
+import com.forrestpangborn.ibex.data.Request;
+import com.forrestpangborn.ibex.data.Response;
+import com.forrestpangborn.ibex.data.Size;
+import com.forrestpangborn.ibex.scaler.DownScaler;
+import com.forrestpangborn.ibex.service.ImageLoadingService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
+import com.google.common.io.ByteStreams;
 
 public class ImageLoadingTask {
 
-	private ImageMetadata metadata;
-	private ImageCache cache;
+	private final Request request;
+	private final ImageCache cache;
 	
-	public ImageLoadingTask(ImageMetadata metadata, ImageCache cache) {
-		this.metadata = metadata;
+	public ImageLoadingTask(Request request, ImageCache cache) {
+		this.request = request;
 		this.cache = cache;
 	}
 	
-	public void load(Context context) {
-		int width = metadata.getWidth();
-		int height = metadata.getHeight();
-		int minWidth = metadata.getMinWidth();
-		int minHeight = metadata.getHeight();
-		String url = metadata.getUrl();
-		String key = metadata.getKey();
-		ScaleType scaleType = metadata.getScaleType();
+	public boolean load(Context context) {
+		Size size = request.getSize();
+		Size minSize = request.getMinSize();
+		String url = request.getUrl();
+		ScaleType scaleType = request.isScalable() ? request.getScaleType() : null;
+		String cacheKey = request.getUniqueKey();
 		
-		if (url != null && width != -1 && height != -1) {
-			Bitmap bmp = buildScaledBitmap(cache.get(key), width, height, minWidth, minHeight, scaleType /*0*/);
+		if (url != null && size.isNonZero()) {
+			Bitmap bmp = null;
+			if (cache != null) {
+				byte[] cacheData = cache.get(cacheKey);
+				if (cacheData != null) {
+					bmp = buildScaledBitmap(cacheData, size, scaleType);
+				}
+			}
 			
 			if (bmp == null && url != null) {
-				bmp = buildScaledBitmap(loadImage(url, key), width, height, minWidth, minHeight, scaleType /*-1*/);
+				byte[] remoteData = loadImage(url, cacheKey);
+				if (remoteData != null) {
+					if (cache != null) {
+						cache.put(cacheKey, remoteData);
+					}
+					bmp = buildScaledBitmap(remoteData, size, scaleType);
+				}
 			}
 			
-			if (bmp != null) {
-				Intent loadedIntent = new Intent(AImageLoadingService.ACTION_IMAGE_LOADED);
-				loadedIntent.putExtra(AImageLoadingService.EXTRA_URL, url);
-				loadedIntent.putExtra(AImageLoadingService.EXTRA_BITMAP, bmp);
+			if (bmp != null && bmp.getWidth() >= minSize.width && bmp.getHeight() >= minSize.height) {
+				Intent loadedIntent = new Intent(ImageLoadingService.ACTION_IMAGE_LOADED);
+				loadedIntent.putExtra(ImageLoadingService.EXTRA_RESPONSE, new Response(request, bmp));
 				LocalBroadcastManager.getInstance(context).sendBroadcast(loadedIntent);
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	private byte[] loadImage(String url, String key) {
-		byte[] data;
+		byte[] data = null;
 		HttpTransport transport = AndroidHttp.newCompatibleTransport();
 		
 		try {
 			HttpRequest request = transport.createRequestFactory().buildGetRequest(new GenericUrl(url));
 			HttpResponse response = request.execute();
 			
-			InputStream stream = response.getContent();
 			if (response.getStatusCode() == HttpURLConnection.HTTP_OK) {
-				data = buildByteArray(stream);
+				InputStream input = response.getContent();
+				data = ByteStreams.toByteArray(input);
+				input.close();
 				cache.put(key, data);
 			} else {
 				data = null;
@@ -79,42 +90,54 @@ public class ImageLoadingTask {
 			data = null;
 		}
 		
+		
 		return data;
 	}
 	
-	private Bitmap buildScaledBitmap(byte[] data, int width, int height, int minWidth, int minHeight, ScaleType scaleType) {
+	private Bitmap buildScaledBitmap(byte[] data, Size size, ScaleType scaleType) {
 		Bitmap bmp = null;
-		if (data != null && width > 0 && height > 0) {
-			Bitmap orig = BitmapFactory.decodeByteArray(data, 0, data.length);
+		
+		if (data != null && size.isNonZero()) {
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inJustDecodeBounds = true;
+			BitmapFactory.decodeByteArray(data, 0, data.length, options);
 			
-			if (orig.getWidth() == width && orig.getHeight() == height) {
-				bmp = orig;
-			} else {
-				AImageScaler scaler;
-				
-				// TODO : centerCrop scaler
-				switch (scaleType) {
-					case CENTER_INSIDE:
-						scaler = new DownScaler();
-						break;
-						
-					case FIT_CENTER:
-					case FIT_START:
-					case FIT_END:
-					case FIT_XY:
-						scaler = new BidirectionalScaler();
-						break;
-						
-					case CENTER:
-					case MATRIX:
-					default:
-						scaler = null;
-						bmp = orig;
-						break;
+			int inSampleSize = 0;
+			for (int i = 1; i < 10; i++) {
+				int x = (int)Math.pow(2, i);
+				if (((options.outWidth / x) >= size.width) && ((options.outHeight / x) >= size.height)) {
+					inSampleSize = x;
+				} else {
+					break;
 				}
+			}
+			options.inJustDecodeBounds = false;
+			options.inSampleSize = inSampleSize;
+			
+			Bitmap orig = BitmapFactory.decodeByteArray(data, 0, data.length, options);
+			if (orig != null) {
+				orig.setDensity(Bitmap.DENSITY_NONE);
+				Size origSize = new Size(orig);
 				
-				if (scaler != null) {
-					bmp = scaler.scale(bmp, minWidth, minHeight);
+				if (scaleType == null || origSize.equals(size)) {
+					bmp = orig;
+				} else {
+					// TODO : centerCrop scaler
+					switch (scaleType) {
+						case CENTER_INSIDE:
+						case FIT_CENTER:
+						case FIT_START:
+						case FIT_END:
+						case FIT_XY:
+							bmp = new DownScaler().scale(orig, size.width, size.height);
+							break;
+							
+						case CENTER:
+						case MATRIX:
+						default:
+							bmp = orig;
+							break;
+					}
 				}
 			}
 		}

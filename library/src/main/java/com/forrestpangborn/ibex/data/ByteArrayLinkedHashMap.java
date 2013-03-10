@@ -16,7 +16,8 @@ public class ByteArrayLinkedHashMap extends LinkedHashMap<String, byte[]> {
 	private OnByteArrayMapEntryRemovedListener listener;
 	private int currentSize;
 	
-	public ByteArrayLinkedHashMap(int maxSize, OnByteArrayMapEntryRemovedListener listener) {
+	public ByteArrayLinkedHashMap(int initialCapacity, int maxSize, OnByteArrayMapEntryRemovedListener listener) {
+		super(initialCapacity, 0.75f, true);
 		this.maxSize = maxSize;
 		this.listener = listener;
 	}
@@ -33,11 +34,31 @@ public class ByteArrayLinkedHashMap extends LinkedHashMap<String, byte[]> {
 	@Override
 	protected boolean removeEldestEntry(Entry<String, byte[]> entry) {
 		if (currentSize > maxSize) {
+			currentSize -= entry.getValue().length;
 			if (listener != null) {
 				listener.onByteArrayMapEntryRemoved(entry);
 			}
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		currentSize = 0;
+	}
+	
+	@Override
+	public byte[] remove(Object key) {
+		byte[] ret = super.remove(key);
+		if (ret != null) {
+			currentSize -= ret.length;
+		}
+		return ret;
+	}
+	
+	public int getCurrentSize() {
+		return currentSize;
 	}
 }

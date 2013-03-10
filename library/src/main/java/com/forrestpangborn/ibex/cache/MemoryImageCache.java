@@ -7,12 +7,12 @@ public class MemoryImageCache implements ImageCache {
 
 	private ByteArrayLinkedHashMap map;
 	
-	public MemoryImageCache(int maxSize, OnByteArrayMapEntryRemovedListener listener) {
-		map = new ByteArrayLinkedHashMap(maxSize, listener);
+	public MemoryImageCache(int initialCapacity, int maxSize, OnByteArrayMapEntryRemovedListener listener) {
+		map = new ByteArrayLinkedHashMap(initialCapacity, maxSize, listener);
 	}
 	
-	public MemoryImageCache(int maxSize) {
-		this(maxSize, null);
+	public MemoryImageCache(int initialCapacity, int maxSize) {
+		this(initialCapacity, maxSize, null);
 	}
 	
 	@Override

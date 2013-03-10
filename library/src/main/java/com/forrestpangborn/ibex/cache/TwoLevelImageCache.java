@@ -22,7 +22,7 @@ public class TwoLevelImageCache implements ImageCache, OnByteArrayMapEntryRemove
 	private DiskLruCache diskCache;
 	
 	public TwoLevelImageCache(Context context, int memoryCacheSize, long diskCacheSize) {
-		memoryCache = new ByteArrayLinkedHashMap(memoryCacheSize, this);
+		memoryCache = new ByteArrayLinkedHashMap(30, memoryCacheSize, this);
 		int versionCode = -1;
 		try {
 			versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;

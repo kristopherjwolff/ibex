@@ -34,7 +34,7 @@ public class Response implements Parcelable {
 	}
 	
 	public Response(Request request, Bitmap bmp) {
-		this(request.getSize(), request.getUniqueKey(), request.isScalable(), request.getScaleType(), bmp);
+		this(request.getSize(), request.getUniqueKey(), request.shouldScale(), request.getScaleType(), bmp);
 	}
 	
 	private Response(Parcel in) {
@@ -80,7 +80,7 @@ public class Response implements Parcelable {
 	public boolean satisifies(Request request) {
 		return Objects.equal(size, request.getSize()) && 
 				Objects.equal(uniqueKey, request.getUniqueKey()) &&
-				Objects.equal(isScaled, request.isScalable()) &&
+				Objects.equal(isScaled, request.shouldScale()) &&
 				Objects.equal(scaleType, request.getScaleType());
 	}
 }

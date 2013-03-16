@@ -72,8 +72,7 @@ public class RequestTest extends TestCase {
 		assertEquals(URL, request.getUrl());
 		
 		assertNull(request.getKey());
-		assertFalse(request.shouldScale());
-		assertEquals(ScaleType.CENTER, request.getScaleType());
+		assertNull(request.getScaleType());
 	}
 	
 	@Test
@@ -82,14 +81,6 @@ public class RequestTest extends TestCase {
 		request = builder.build();
 		
 		assertEquals("key", request.getKey());
-	}
-	
-	@Test
-	public void testRequestShouldScale() {
-		builder.size(SIZE).minSize(MIN_SIZE).url(URL).scale(true);
-		request = builder.build();
-		
-		assertTrue(request.shouldScale());
 	}
 	
 	@Test

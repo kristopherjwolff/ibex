@@ -14,21 +14,19 @@ public final class Request implements Parcelable {
 		private Size minSize;
 		private String url;
 		private String key;
-		private boolean shouldScale;
-		private ScaleType scaleType = ScaleType.CENTER;
+		private ScaleType scaleType;
 		
 		public Builder size(Size value) { this.size = value; return this; }
 		public Builder minSize(Size value) { this.minSize = value; return this; }
 		public Builder url(String value) { this.url = value; return this; }
 		public Builder key(String value) { this.key = value; return this; }
-		public Builder scale(boolean value) { this.shouldScale = value; return this; }
 		public Builder scaleType(ScaleType value) { this.scaleType = value; return this; }
 		
 		public Request build() {
 			if (size == null || minSize == null || url == null) {
 				throw new IllegalStateException();
 			}
-			return new Request(size, minSize, url, key, shouldScale, scaleType);
+			return new Request(size, minSize, url, key, scaleType);
 		}
 	}
 	
@@ -46,15 +44,13 @@ public final class Request implements Parcelable {
 	private final Size minSize;
 	private final String url;
 	private final String key;
-	private final boolean shouldScale;
 	private final ScaleType scaleType;
 	
-	private Request(Size size, Size minSize, String url, String key, boolean shouldScale, ScaleType scaleType) {
+	private Request(Size size, Size minSize, String url, String key, ScaleType scaleType) {
 		this.size = size;
 		this.minSize = minSize;
 		this.url = url;
 		this.key = key;
-		this.shouldScale = shouldScale;
 		this.scaleType = scaleType;
 	}
 	
@@ -63,9 +59,6 @@ public final class Request implements Parcelable {
 		minSize = in.readParcelable(Size.class.getClassLoader());
 		url = in.readString();
 		key = in.readString();
-		boolean[] tmp = new boolean[1];
-		in.readBooleanArray(tmp);
-		shouldScale = tmp[0];
 		scaleType = Enum.valueOf(ScaleType.class, in.readString());
 	}
 	
@@ -97,7 +90,6 @@ public final class Request implements Parcelable {
 		dest.writeParcelable(minSize, 0);
 		dest.writeString(url);
 		dest.writeString(key);
-		dest.writeBooleanArray(new boolean[] {shouldScale});
 		dest.writeString(scaleType.toString());
 	}
 	
@@ -115,10 +107,6 @@ public final class Request implements Parcelable {
 	
 	public String getKey() {
 		return key;
-	}
-	
-	public boolean shouldScale() {
-		return shouldScale;
 	}
 	
 	public ScaleType getScaleType() {

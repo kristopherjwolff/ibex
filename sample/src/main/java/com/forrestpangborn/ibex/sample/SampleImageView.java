@@ -36,8 +36,7 @@ public class SampleImageView extends AIbexImageView {
 		Builder b = new Builder();
 		b.size(new Size(getWidth(), getHeight()));
 		b.minSize(new Size(Math.min(getWidth(), 500), Math.min(getHeight(), 500)));
-		b.url(url);
-		return b.build();
+		return b.url(url).scaleType(ScaleType.CENTER_INSIDE).build();
 	}
 	
 	@Override

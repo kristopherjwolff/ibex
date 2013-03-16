@@ -4,6 +4,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.forrestpangborn.ibex.data.Request;
+import com.forrestpangborn.ibex.data.Request.Builder;
+import com.forrestpangborn.ibex.data.Size;
 import com.forrestpangborn.ibex.view.AIbexImageView;
 
 public class SampleImageView extends AIbexImageView {
@@ -27,30 +30,14 @@ public class SampleImageView extends AIbexImageView {
 	protected ComponentName getServiceComponentName(Context context) {
 		return SERVICE;
 	}
-
-	@Override
-	protected int getMinWidth() {
-		return Math.min(getWidth(), 500);
-	}
-
-	@Override
-	protected int getMinHeight() {
-		return Math.min(getHeight(), 500);
-	}
-
-	@Override
-	protected String getUrl() {
-		return url;
-	}
-
-	@Override
-	protected String getKey() {
-		return null;
-	}
 	
 	@Override
-	protected boolean isScalable() {
-		return true;
+	protected Request buildRequest() {
+		Builder b = new Builder();
+		b.size(new Size(getWidth(), getHeight()));
+		b.minSize(new Size(Math.min(getWidth(), 500), Math.min(getHeight(), 500)));
+		b.url(url);
+		return b.build();
 	}
 	
 	@Override

@@ -38,7 +38,7 @@ public class ImageLoadingTask {
 		Size size = request.getSize();
 		Size minSize = request.getMinSize();
 		String url = request.getUrl();
-		ScaleType scaleType = request.isScalable() ? request.getScaleType() : null;
+		ScaleType scaleType = request.shouldScale() ? request.getScaleType() : null;
 		String cacheKey = request.getUniqueKey();
 		
 		if (url != null && size.isNonZero()) {

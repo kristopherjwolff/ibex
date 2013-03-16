@@ -11,7 +11,6 @@ import android.widget.ImageView;
 
 import com.forrestpangborn.ibex.data.Request;
 import com.forrestpangborn.ibex.data.Response;
-import com.forrestpangborn.ibex.data.Size;
 import com.forrestpangborn.ibex.service.ImageLoadingService;
 
 public abstract class AIbexImageView extends ImageView {
@@ -24,11 +23,7 @@ public abstract class AIbexImageView extends ImageView {
 	}
 	
 	protected abstract ComponentName getServiceComponentName(Context context);
-	protected abstract int getMinWidth();
-	protected abstract int getMinHeight();
-	protected abstract String getUrl();
-	protected abstract String getKey();
-	protected abstract boolean isScalable();
+	protected abstract Request buildRequest();
 
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -47,16 +42,8 @@ public abstract class AIbexImageView extends ImageView {
 		}
 	}
 	
-	protected Request getImageRequest() {
-		return getImageRequest(getUrl());
-	}
-	
-	protected Request getImageRequest(String url) {
-		return new Request(new Size(getWidth(), getHeight()), new Size(getMinWidth(), getMinHeight()), url, getKey(), isScalable(), getScaleType());
-	}
-	
 	protected void loadImage() {
-		Request request = getImageRequest();
+		Request request = buildRequest();
 		if (request != null && !request.equals(previousRequest)) {
 			if (previousRequest != null && 
 					request != null && 

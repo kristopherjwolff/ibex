@@ -9,14 +9,14 @@
 	<groupId>com.forrestpangborn</groupId>
 	<artifactId>ibex</artifactId>
 	<packaging>jar</packaging>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.6-SNAPSHOT</version>
 	<name>Ibex</name>
 	<url>http://www.google.com</url>
 	
 	<parent>
 		<groupId>com.forrestpangborn</groupId>
 		<artifactId>ibex-parent</artifactId>
-		<version>0.5-SNAPSHOT</version>
+		<version>0.6-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 

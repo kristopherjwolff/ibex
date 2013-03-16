@@ -15,7 +15,7 @@
 
 	<groupId>com.forrestpangborn</groupId>
 	<artifactId>ibex-sample</artifactId>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.6-SNAPSHOT</version>
 	<packaging>apk</packaging>
 	<name>Ibex Sample</name>
 
@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>com.forrestpangborn</groupId>
 			<artifactId>ibex</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.6-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>xpp3</artifactId>

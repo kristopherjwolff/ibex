@@ -30,6 +30,7 @@
 		<dependency>
 			<groupId>android.support</groupId>
 			<artifactId>compatibility-v4</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		
 		<dependency>
@@ -48,5 +49,35 @@
 		</dependency>
 		
 	</dependencies>
+	
+	
+	<build>
+		<plugins>
+			<plugin>
+ 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.0</version>
+				<executions>
+					<execution>
+						<phase></phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<artifactSet>
+								<excludes>
+									<exclude>commons-logging:commons-logging</exclude>
+									<exclude>org.apache.httpcomponents:httpclient</exclude>
+									<exclude>org.apache.httpcomponents:httpcore</exclude>
+									<exclude>commons-codec:commons-codec</exclude>
+									<exclude>xpp3:xpp3</exclude>
+								</excludes>
+							</artifactSet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 	
 </project>

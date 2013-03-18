@@ -16,6 +16,7 @@ import com.forrestpangborn.ibex.data.Request;
 import com.forrestpangborn.ibex.data.Response;
 import com.forrestpangborn.ibex.data.Size;
 import com.forrestpangborn.ibex.scaler.DownScaler;
+import com.forrestpangborn.ibex.scaler.DownScaler.DownScaleType;
 import com.forrestpangborn.ibex.service.ImageLoadingService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.GenericUrl;
@@ -122,14 +123,17 @@ public class ImageLoadingTask {
 				if (scaleType == null || origSize.equals(size)) {
 					bmp = orig;
 				} else {
-					// TODO : centerCrop scaler
 					switch (scaleType) {
 						case CENTER_INSIDE:
 						case FIT_CENTER:
 						case FIT_START:
 						case FIT_END:
 						case FIT_XY:
-							bmp = new DownScaler().scale(orig, size.width, size.height);
+							bmp = new DownScaler().scale(orig, size.width, size.height, DownScaleType.FIT);
+							break;
+						
+						case CENTER_CROP:
+							bmp = new DownScaler().scale(orig, size.width, size.height, DownScaleType.CROP);
 							break;
 							
 						case CENTER:

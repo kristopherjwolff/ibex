@@ -4,7 +4,12 @@ import android.graphics.Bitmap;
 
 public class DownScaler {
 	
-	public Bitmap scale(Bitmap bmp, int width, int height) {
+	public static enum DownScaleType {
+		FIT,
+		CROP;
+	}
+	
+	public Bitmap scale(Bitmap bmp, int width, int height, DownScaleType type) {
 		Bitmap ret = bmp;
 		
 		if (bmp != null) {
@@ -14,7 +19,18 @@ public class DownScaler {
 			if (bWidth == width || bHeight == height) {
 				ret = bmp;
 			} else if (bWidth > width || bHeight > height) {
-				float pct = Math.min(width / (float)bWidth, height / (float)bHeight);
+				float pct = 1f;
+				
+				switch (type) {
+					case FIT:
+						pct = Math.min(width / (float)bWidth, height / (float)bHeight);
+						break;
+						
+					case CROP:
+						pct = Math.max(width / (float)bWidth, height / (float)bHeight);
+						break;
+				}
+				
 				ret = scale(bmp, pct);
 			}
 		}

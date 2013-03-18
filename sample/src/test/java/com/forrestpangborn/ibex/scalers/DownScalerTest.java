@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 
 import com.forrestpangborn.ibex.scaler.DownScaler;
+import com.forrestpangborn.ibex.scaler.DownScaler.DownScaleType;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
@@ -33,7 +34,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testScaleDownSquareToSquare() {
 		Bitmap orig = Bitmap.createBitmap(20, 20, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 10, 10);
+		Bitmap bmp = scaler.scale(orig, 10, 10, DownScaleType.FIT);
 		
 		assertEquals(10, bmp.getWidth());
 		assertEquals(10, bmp.getHeight());
@@ -42,7 +43,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testNoScaleUp() {
 		Bitmap orig = Bitmap.createBitmap(10, 10, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 20, 20);
+		Bitmap bmp = scaler.scale(orig, 20, 20, DownScaleType.FIT);
 		assertEquals(10, bmp.getWidth());
 		assertEquals(10, bmp.getHeight());
 		assertTrue(bmp == orig);
@@ -51,7 +52,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testEqualDimensions() {
 		Bitmap orig = Bitmap.createBitmap(10, 10, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 10, 10);
+		Bitmap bmp = scaler.scale(orig, 10, 10, DownScaleType.FIT);
 		assertEquals(10, bmp.getWidth());
 		assertEquals(10, bmp.getHeight());
 		assertTrue(bmp == orig);
@@ -60,7 +61,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testEqualWidth() {
 		Bitmap orig = Bitmap.createBitmap(20, 10, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 20, 20);
+		Bitmap bmp = scaler.scale(orig, 20, 20, DownScaleType.FIT);
 		assertEquals(20, bmp.getWidth());
 		assertEquals(10, bmp.getHeight());
 		assertTrue(bmp == orig);
@@ -69,7 +70,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testEqualHeight() {
 		Bitmap orig = Bitmap.createBitmap(10, 20, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 20, 20);
+		Bitmap bmp = scaler.scale(orig, 20, 20, DownScaleType.FIT);
 		assertEquals(10, bmp.getWidth());
 		assertEquals(20, bmp.getHeight());
 		assertTrue(bmp == orig);
@@ -78,7 +79,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testScaleDownWidthBased() {
 		Bitmap orig = Bitmap.createBitmap(40, 10, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 20, 20);
+		Bitmap bmp = scaler.scale(orig, 20, 20, DownScaleType.FIT);
 		assertEquals(20, bmp.getWidth());
 		assertEquals(5, bmp.getHeight());
 	}
@@ -86,7 +87,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testScaleDownHeightBased() {
 		Bitmap orig = Bitmap.createBitmap(10, 40, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 20, 20);
+		Bitmap bmp = scaler.scale(orig, 20, 20, DownScaleType.FIT);
 		assertEquals(5, bmp.getWidth());
 		assertEquals(20, bmp.getHeight());
 	}
@@ -94,7 +95,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testNoScaleDownOnSameWidthGreaterHeight() {
 		Bitmap orig = Bitmap.createBitmap(20, 40, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 20, 20);
+		Bitmap bmp = scaler.scale(orig, 20, 20, DownScaleType.FIT);
 		assertEquals(20, bmp.getWidth());
 		assertEquals(40, bmp.getHeight());
 	}
@@ -102,7 +103,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testNoScaleDownOnGreaterWidthSameHeight() {
 		Bitmap orig = Bitmap.createBitmap(40, 20, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 20, 20);
+		Bitmap bmp = scaler.scale(orig, 20, 20, DownScaleType.FIT);
 		assertEquals(40, bmp.getWidth());
 		assertEquals(20, bmp.getHeight());
 	}
@@ -110,7 +111,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testScaleDownWidthLargerHeightSmaller() {
 		Bitmap orig = Bitmap.createBitmap(18, 6, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 12, 12);
+		Bitmap bmp = scaler.scale(orig, 12, 12, DownScaleType.FIT);
 		assertEquals(12, bmp.getWidth());
 		assertEquals(4, bmp.getHeight());
 	}
@@ -118,7 +119,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testScaleDownWidthSmallerHeight() {
 		Bitmap orig = Bitmap.createBitmap(6, 18, Config.ARGB_8888);
-		Bitmap bmp = scaler.scale(orig, 12, 12);
+		Bitmap bmp = scaler.scale(orig, 12, 12, DownScaleType.FIT);
 		assertEquals(4, bmp.getWidth());
 		assertEquals(12, bmp.getHeight());
 	}
@@ -126,7 +127,7 @@ public class DownScalerTest extends TestCase {
 	@Test
 	public void testNullBitmap() {
 		Bitmap orig = null;
-		Bitmap bmp = scaler.scale(orig, 20, 20);
+		Bitmap bmp = scaler.scale(orig, 20, 20, DownScaleType.FIT);
 		assertNull(bmp);
 	}
 }

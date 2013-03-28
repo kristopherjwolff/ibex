@@ -41,13 +41,14 @@ public class ImageLoadingTask {
 		String url = request.getUrl();
 		ScaleType scaleType = request.getScaleType();
 		String cacheKey = request.getUniqueKey();
+		boolean shouldScale = request.getShouldScale();
 		
 		if (url != null && size.isNonZero()) {
 			Bitmap bmp = null;
 			if (cache != null) {
 				byte[] cacheData = cache.get(cacheKey);
 				if (cacheData != null) {
-					bmp = buildScaledBitmap(cacheData, size, scaleType);
+					bmp = buildScaledBitmap(cacheData, size, scaleType, shouldScale);
 				}
 			}
 			
@@ -57,7 +58,7 @@ public class ImageLoadingTask {
 					if (cache != null) {
 						cache.put(cacheKey, remoteData);
 					}
-					bmp = buildScaledBitmap(remoteData, size, scaleType);
+					bmp = buildScaledBitmap(remoteData, size, scaleType, shouldScale);
 				}
 			}
 			
@@ -95,7 +96,7 @@ public class ImageLoadingTask {
 		return data;
 	}
 	
-	private Bitmap buildScaledBitmap(byte[] data, Size size, ScaleType scaleType) {
+	private Bitmap buildScaledBitmap(byte[] data, Size size, ScaleType scaleType, boolean shouldScale) {
 		Bitmap bmp = null;
 		
 		if (data != null && size.isNonZero()) {
@@ -120,7 +121,7 @@ public class ImageLoadingTask {
 				orig.setDensity(Bitmap.DENSITY_NONE);
 				Size origSize = new Size(orig);
 				
-				if (scaleType == null || origSize.equals(size)) {
+				if (!shouldScale || scaleType == null || origSize.equals(size)) {
 					bmp = orig;
 				} else {
 					switch (scaleType) {

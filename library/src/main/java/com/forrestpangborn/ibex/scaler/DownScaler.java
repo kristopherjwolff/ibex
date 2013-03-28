@@ -39,7 +39,7 @@ public class DownScaler {
 	}
 	
 	protected final Bitmap scale(Bitmap bmp, float pct) {
-		Bitmap ret = Bitmap.createScaledBitmap(bmp, Math.round(bmp.getWidth() * pct), Math.round(bmp.getHeight() * pct), false);
+		Bitmap ret = Bitmap.createScaledBitmap(bmp, (int)Math.ceil(bmp.getWidth() * pct), (int)Math.ceil(bmp.getHeight() * pct), false);
 		bmp.recycle();
 		return ret;
 	}

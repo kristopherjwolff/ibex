@@ -22,6 +22,11 @@ public abstract class AIbexImageView extends ImageView {
 		super(context, set, defStyle);
 	}
 	
+	public void clear() {
+		previousRequest = null;
+		setImageDrawable(null);
+	}
+	
 	protected abstract ComponentName getServiceComponentName(Context context);
 	protected abstract Request buildRequest();
 
@@ -44,6 +49,7 @@ public abstract class AIbexImageView extends ImageView {
 	
 	protected void loadImage() {
 		Request request = buildRequest();
+		
 		if (request != null && !request.equals(previousRequest)) {
 			if (previousRequest != null && 
 					request != null && 
@@ -68,7 +74,7 @@ public abstract class AIbexImageView extends ImageView {
 					@Override
 					public void onReceive(Context context, Intent intent) {
 						Response response = intent.getParcelableExtra(ImageLoadingService.EXTRA_RESPONSE);
-						if (response.satisifies(previousRequest)) {
+						if (previousRequest != null && response.satisifies(previousRequest)) {
 							LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(this);
 							imageLoadedReceiver = null;
 							setImageBitmap(response.getBitmap());

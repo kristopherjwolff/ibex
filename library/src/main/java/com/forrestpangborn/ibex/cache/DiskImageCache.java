@@ -1,5 +1,6 @@
 package com.forrestpangborn.ibex.cache;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,16 +18,20 @@ public class DiskImageCache implements ImageCache {
 	
 	private DiskLruCache cache;
 	
-	public DiskImageCache(Context context, long size) {
+	public DiskImageCache(Context context, File path, long size) {
 		int versionCode = -1;
 		try {
 			versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-			cache = DiskLruCache.open(context.getCacheDir(), versionCode, 1, size);
+			cache = DiskLruCache.open(path, versionCode, 1, size);
 		} catch (NameNotFoundException ex) {
 			// TODO : this will not happen????
 		} catch (IOException ex) {
 			Log.e("Ibex", "IOException attempting to open DiskLruCache!", ex);
 		}
+	}
+	
+	public DiskImageCache(Context context, long size) {
+		this(context, context.getCacheDir(), size);
 	}
 	
 	@Override
@@ -38,6 +43,7 @@ public class DiskImageCache implements ImageCache {
 					OutputStream output = editor.newOutputStream(0);
 					output.write(data);
 					editor.commit();
+					output.close();
 				}
 			} catch (IOException ex) {
 				// nada!

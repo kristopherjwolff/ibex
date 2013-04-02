@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.forrestpangborn.ibex.data.Request;
@@ -28,7 +29,7 @@ public abstract class AIbexImageView extends ImageView {
 	}
 	
 	protected abstract ComponentName getServiceComponentName(Context context);
-	protected abstract Request buildRequest();
+	protected abstract Request.Builder createRequestBuilder();
 
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -48,7 +49,14 @@ public abstract class AIbexImageView extends ImageView {
 	}
 	
 	protected void loadImage() {
-		Request request = buildRequest();
+		Request request;
+		
+		try {
+			request = createRequestBuilder().build();
+		} catch (IllegalStateException ex) {
+			Log.e("Ibex", "Error building request in AIbexImageView.");
+			request = null;
+		}
 		
 		if (request != null && !request.equals(previousRequest)) {
 			if (previousRequest != null && 

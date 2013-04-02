@@ -32,11 +32,11 @@ public class SampleImageView extends AIbexImageView {
 	}
 	
 	@Override
-	protected Request buildRequest() {
+	protected Request.Builder createRequestBuilder() {
 		Builder b = new Builder();
 		b.size(new Size(getWidth(), getHeight()));
 		b.minSize(new Size(Math.min(getWidth(), 500), Math.min(getHeight(), 500)));
-		return b.url(url).scaleType(ScaleType.CENTER_INSIDE).build();
+		return b.url(url).scaleType(ScaleType.CENTER_INSIDE);
 	}
 	
 	@Override

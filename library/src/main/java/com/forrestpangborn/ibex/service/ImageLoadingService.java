@@ -82,7 +82,9 @@ public abstract class ImageLoadingService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		cache.close();
+		if (cache != null) {
+			cache.close();
+		}
 	}
 	
 	protected abstract ThreadPoolExecutor getExecutor();

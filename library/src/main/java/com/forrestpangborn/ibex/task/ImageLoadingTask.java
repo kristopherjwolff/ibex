@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ImageView.ScaleType;
 
@@ -20,6 +21,7 @@ import com.forrestpangborn.ibex.scaler.DownScaler.DownScaleType;
 import com.forrestpangborn.ibex.service.ImageLoadingService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
@@ -39,6 +41,7 @@ public class ImageLoadingTask {
 		Size size = request.getSize();
 		Size minSize = request.getMinSize();
 		String url = request.getUrl();
+		Bundle headers = request.getHeaders();
 		ScaleType scaleType = request.getScaleType();
 		String cacheKey = request.getUniqueKey();
 		boolean shouldScale = request.getShouldScale();
@@ -53,7 +56,7 @@ public class ImageLoadingTask {
 			}
 			
 			if (bmp == null && url != null) {
-				byte[] remoteData = loadImage(url, cacheKey);
+				byte[] remoteData = loadImage(url, headers, cacheKey);
 				if (remoteData != null) {
 					if (cache != null) {
 						cache.put(cacheKey, remoteData);
@@ -72,19 +75,31 @@ public class ImageLoadingTask {
 		return false;
 	}
 	
-	private byte[] loadImage(String url, String key) {
+	private byte[] loadImage(String url, Bundle headers, String key) {
 		byte[] data = null;
 		HttpTransport transport = AndroidHttp.newCompatibleTransport();
 		
 		try {
 			HttpRequest request = transport.createRequestFactory().buildGetRequest(new GenericUrl(url));
+			HttpHeaders httpHeaders = new HttpHeaders();
+			
+			if (headers != null) {
+				for (String headerKey : headers.keySet()) {
+					String headerValue = headers.getString(headerKey);
+					if (headerValue != null) {
+						httpHeaders.put(headerKey, headerValue);
+					}
+				}
+				
+				request.setHeaders(httpHeaders);
+			}
+			
 			HttpResponse response = request.execute();
 			
 			if (response.getStatusCode() == HttpURLConnection.HTTP_OK) {
 				InputStream input = response.getContent();
 				data = ByteStreams.toByteArray(input);
 				input.close();
-				cache.put(key, data);
 			} else {
 				data = null;
 			}

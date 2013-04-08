@@ -50,12 +50,6 @@ public class RequestTest extends TestCase {
 	}
 	
 	@Test
-	public void testMissingMinSize() {
-		builder.size(SIZE).url(URL);
-		assertNull(buildExpectsException(builder, IllegalStateException.class));
-	}
-	
-	@Test
 	public void testMissingUrl() {
 		builder.size(SIZE).minSize(MIN_SIZE);
 		assertNull(buildExpectsException(builder, IllegalStateException.class));

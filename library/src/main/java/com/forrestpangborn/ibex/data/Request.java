@@ -28,7 +28,7 @@ public final class Request implements Parcelable {
 		public Builder shouldScale(boolean value) { this.shouldScale = value; return this; }
 		
 		public Request build() {
-			if (size == null || minSize == null || url == null) {
+			if (size == null || url == null) {
 				throw new IllegalStateException();
 			}
 			return new Request(size, minSize, url, headers, key, scaleType, shouldScale);

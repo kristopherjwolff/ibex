@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 import com.google.common.base.Objects;
 
-public class Size implements Parcelable {
+public class Size implements Parcelable, Comparable<Size> {
 	
 	public static final Parcelable.Creator<Size> CREATOR = new Parcelable.Creator<Size>(){
 		public Size createFromParcel(Parcel in) {
@@ -52,6 +52,20 @@ public class Size implements Parcelable {
 	@Override
 	public int describeContents() {
 		return 0;
+	}
+	
+	@Override
+	public int compareTo(Size size) {
+		int ret;
+		if (width == size.width && height == size.height) {
+			ret = 0;
+		} else if (width < size.width || height < size.height) {
+			ret = -1;
+		} else {
+			ret = 1;
+		}
+		
+		return ret;
 	}
 
 	@Override

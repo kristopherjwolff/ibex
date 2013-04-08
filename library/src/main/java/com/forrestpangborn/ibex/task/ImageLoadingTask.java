@@ -40,6 +40,9 @@ public class ImageLoadingTask {
 	public boolean load(Context context) {
 		Size size = request.getSize();
 		Size minSize = request.getMinSize();
+		if (minSize == null) {
+			minSize = size;
+		}
 		String url = request.getUrl();
 		Bundle headers = request.getHeaders();
 		ScaleType scaleType = request.getScaleType();

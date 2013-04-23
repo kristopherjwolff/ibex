@@ -1,24 +1,25 @@
 package com.forrestpangborn.ibex.sample;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.util.AttributeSet;
 
 import com.forrestpangborn.ibex.data.Request;
 import com.forrestpangborn.ibex.data.Request.Builder;
 import com.forrestpangborn.ibex.data.Size;
+import com.forrestpangborn.ibex.manager.RequestManager;
 import com.forrestpangborn.ibex.view.AIbexImageView;
 
 public class SampleImageView extends AIbexImageView {
 	
-	private static ComponentName SERVICE;
+	private static RequestManager requestManager;
+	
 	private String url;
 	private boolean preventLoad;
 
 	public SampleImageView(Context context, AttributeSet set, int defStyle) {
 		super(context, set, defStyle);
-		if (SERVICE == null) {
-			SERVICE = new ComponentName(context, SampleImageLoadingService.class);
+		if (requestManager == null) {
+			requestManager = new SampleRequestManager(context);
 		}
 	}
 	
@@ -27,13 +28,14 @@ public class SampleImageView extends AIbexImageView {
 	}
 
 	@Override
-	protected ComponentName getServiceComponentName(Context context) {
-		return SERVICE;
+	protected RequestManager getRequestManager() {
+		return requestManager;
 	}
 	
 	@Override
 	protected Request.Builder createRequestBuilder() {
 		Builder b = new Builder();
+		b.imageView(this);
 		b.size(new Size(getWidth(), getHeight()));
 		b.minSize(new Size(Math.min(getWidth(), 500), Math.min(getHeight(), 500)));
 		return b.url(url).scaleType(ScaleType.CENTER_INSIDE);

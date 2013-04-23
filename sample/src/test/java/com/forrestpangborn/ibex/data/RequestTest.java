@@ -2,12 +2,21 @@ package com.forrestpangborn.ibex.data;
 
 import junit.framework.TestCase;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import android.app.Activity;
 import android.widget.ImageView.ScaleType;
 
 import com.forrestpangborn.ibex.data.Request.Builder;
+import com.forrestpangborn.ibex.manager.RequestManager;
+import com.forrestpangborn.ibex.view.AIbexImageView;
+import com.google.common.hash.Hashing;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 
+@RunWith(RobolectricTestRunner.class)
 public class RequestTest extends TestCase {
 	
 	private static Request buildExpectsException(Builder builder, Class<? extends Exception> eClass) {
@@ -30,13 +39,13 @@ public class RequestTest extends TestCase {
 	private Builder builder;
 	private Request request;
 	
-	@Override
+	@Override @Before
 	public void setUp() throws Exception {
 		super.setUp();
 		builder = new Builder();
 	}
 	
-	@Override
+	@Override @After
 	public void tearDown() throws Exception {
 		super.tearDown();
 		builder = null;
@@ -57,31 +66,49 @@ public class RequestTest extends TestCase {
 	
 	@Test
 	public void testRequestContainsOnlyRequiredArgs() {
-		builder.size(SIZE).minSize(MIN_SIZE).url(URL);
+		builder.imageView(new MockIbexImageView()).size(SIZE).minSize(MIN_SIZE).url(URL);
 		request = builder.build();
 		
 		assertNotNull(request);
-		assertEquals(SIZE, request.getSize());
-		assertEquals(MIN_SIZE, request.getMinSize());
-		assertEquals(URL, request.getUrl());
+		assertEquals(SIZE, request.size);
+		assertEquals(MIN_SIZE, request.minSize);
+		assertEquals(URL, request.url);
 		
-		assertNull(request.getKey());
-		assertNull(request.getScaleType());
+		assertNotNull(request.key);
+		assertNull(request.scaleType);
 	}
 	
 	@Test
 	public void testRequestContainsKey() {
-		builder.size(SIZE).minSize(MIN_SIZE).url(URL).key("key");
+		builder.imageView(new MockIbexImageView()).size(SIZE).minSize(MIN_SIZE).url(URL).cacheKey("key");
 		request = builder.build();
 		
-		assertEquals("key", request.getKey());
+		assertEquals(Hashing.md5().hashString("key").toString(), request.key);
 	}
 	
 	@Test
 	public void testRequestAlternateScaleType() {
-		builder.size(SIZE).minSize(MIN_SIZE).url(URL).scaleType(ScaleType.FIT_CENTER);
+		builder.imageView(new MockIbexImageView()).size(SIZE).minSize(MIN_SIZE).url(URL).scaleType(ScaleType.FIT_CENTER);
 		request = builder.build();
 		
-		assertEquals(ScaleType.FIT_CENTER, request.getScaleType());
+		assertEquals(ScaleType.FIT_CENTER, request.scaleType);
+	}
+	
+	private static class MockIbexImageView extends AIbexImageView {
+
+		public MockIbexImageView() {
+			super(new Activity());
+		}
+
+		@Override
+		protected Builder createRequestBuilder() {
+			return null;
+		}
+
+		@Override
+		protected RequestManager getRequestManager() {
+			return null;
+		}
+		
 	}
 }

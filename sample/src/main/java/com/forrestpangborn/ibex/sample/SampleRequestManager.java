@@ -4,31 +4,28 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import android.content.Context;
+
 import com.forrestpangborn.ibex.cache.ImageCache;
 import com.forrestpangborn.ibex.cache.TwoLevelImageCache;
-import com.forrestpangborn.ibex.service.ImageLoadingService;
+import com.forrestpangborn.ibex.manager.RequestManager;
 
-public class SampleImageLoadingService extends ImageLoadingService {
+public class SampleRequestManager extends RequestManager {
 	
 	private static final int SIZE_MEMORY_CACHE = 1500000;
 	private static final long SIZE_DISK_CACHE = 7000000;
 	
-	private ThreadPoolExecutor executor;
-	private ImageCache cache;
+	public SampleRequestManager(Context context) {
+		super(context);
+	}
 	
 	@Override
 	protected ThreadPoolExecutor getExecutor() {
-		if (executor == null) {
-			executor = new ThreadPoolExecutor(4, 4, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-		}
-		return executor;
+		return new ThreadPoolExecutor(4, 4, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	}
 	
 	@Override
 	protected ImageCache getCache() {
-		if (cache == null) {
-			cache = new TwoLevelImageCache(this, SIZE_MEMORY_CACHE, SIZE_DISK_CACHE);
-		}
-		return cache;
+		return new TwoLevelImageCache(appContext, SIZE_MEMORY_CACHE, SIZE_DISK_CACHE);
 	}
 }

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
+import com.forrestpangborn.ibex.data.Request;
 import com.google.common.io.ByteStreams;
 import com.jakewharton.DiskLruCache;
 import com.jakewharton.DiskLruCache.Editor;
@@ -35,10 +36,10 @@ public class DiskImageCache implements ImageCache {
 	}
 	
 	@Override
-	public void put(String key, byte[] data) {
-		if (data != null && key != null) {
+	public void put(Request request, byte[] data) {
+		if (data != null && request.key != null) {
 			try {
-				Editor editor = cache.edit(key);
+				Editor editor = cache.edit(request.key);
 				if (editor != null) {
 					OutputStream output = editor.newOutputStream(0);
 					output.write(data);
@@ -52,11 +53,11 @@ public class DiskImageCache implements ImageCache {
 	}
 
 	@Override
-	public byte[] get(String key) {
+	public byte[] get(Request request) {
 		byte[] ret = null;
 		
 		try {
-			Snapshot snapshot = cache.get(key);
+			Snapshot snapshot = cache.get(request.key);
 			if (snapshot != null) {
 				InputStream input = snapshot.getInputStream(0);
 				ret = ByteStreams.toByteArray(input);

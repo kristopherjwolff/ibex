@@ -26,12 +26,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>android.support</groupId>
-			<artifactId>compatibility-v4</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
 		    <groupId>com.jakewharton</groupId>
 		    <artifactId>disklrucache</artifactId>
 		</dependency>

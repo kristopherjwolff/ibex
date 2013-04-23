@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.forrestpangborn.ibex.data.ByteArrayLinkedHashMap;
 import com.forrestpangborn.ibex.data.ByteArrayLinkedHashMap.OnByteArrayMapEntryRemovedListener;
+import com.forrestpangborn.ibex.data.Request;
 import com.google.common.io.ByteStreams;
 import com.jakewharton.DiskLruCache;
 import com.jakewharton.DiskLruCache.Editor;
@@ -35,10 +36,10 @@ public class TwoLevelImageCache implements ImageCache, OnByteArrayMapEntryRemove
 	}
 
 	@Override
-	public void put(String key, byte[] data) {
-		if (memoryCache.put(key, data) == null) {
+	public void put(Request request, byte[] data) {
+		if (memoryCache.put(request.key, data) == null) {
 			try {
-				Editor editor = diskCache.edit(key);
+				Editor editor = diskCache.edit(request.key);
 				if (editor != null) {
 					OutputStream output = editor.newOutputStream(0);
 					output.write(data);
@@ -52,15 +53,15 @@ public class TwoLevelImageCache implements ImageCache, OnByteArrayMapEntryRemove
 	}
 
 	@Override
-	public byte[] get(String key) {
+	public byte[] get(Request request) {
 		byte[] memoryData = null;
 		byte[] diskData = null;
 		
-		memoryData = memoryCache.get(key);
+		memoryData = memoryCache.get(request.key);
 		
 		if (memoryData == null) {
 			try {
-				Snapshot snapshot = diskCache.get(key);
+				Snapshot snapshot = diskCache.get(request.key);
 				if (snapshot != null) {
 					InputStream input = snapshot.getInputStream(0);
 					diskData = ByteStreams.toByteArray(input);
@@ -73,8 +74,8 @@ public class TwoLevelImageCache implements ImageCache, OnByteArrayMapEntryRemove
 		
 		if (diskData != null) {
 			try {
-				if (memoryCache.put(key, diskData) != null) {
-					diskCache.remove(key);
+				if (memoryCache.put(request.key, diskData) != null) {
+					diskCache.remove(request.key);
 				}
 			} catch (IOException ex) {
 				// fail silently?

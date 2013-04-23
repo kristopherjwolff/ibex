@@ -1,35 +1,31 @@
 package com.forrestpangborn.ibex.view;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.forrestpangborn.ibex.data.Request;
+import com.forrestpangborn.ibex.data.Request.Builder;
 import com.forrestpangborn.ibex.data.Response;
-import com.forrestpangborn.ibex.service.ImageLoadingService;
+import com.forrestpangborn.ibex.manager.RequestManager;
 
 public abstract class AIbexImageView extends ImageView {
 	
+	private int defaultDrawableId;
+	private RequestManager requestManager;
 	private Request previousRequest;
-	private BroadcastReceiver imageLoadedReceiver;
+	
+	protected abstract Builder createRequestBuilder();
+	protected abstract RequestManager getRequestManager();
 	
 	public AIbexImageView(Context context, AttributeSet set, int defStyle) {
 		super(context, set, defStyle);
 	}
 	
-	public void clear() {
-		previousRequest = null;
-		setImageDrawable(null);
+	public AIbexImageView(Context context) {
+		this(context, null, -1);
 	}
-	
-	protected abstract ComponentName getServiceComponentName(Context context);
-	protected abstract Request.Builder createRequestBuilder();
 
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -39,13 +35,22 @@ public abstract class AIbexImageView extends ImageView {
 		}
 	}
 	
-	@Override
-	protected void onDetachedFromWindow() {
-		super.onDetachedFromWindow();
-		
-		if (imageLoadedReceiver != null) {
-			LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(imageLoadedReceiver);
+	public void setDefaultDrawableId(int value) {
+		this.defaultDrawableId = value;
+	}
+	
+	public void clear() {
+		previousRequest = null;
+		removeImage();
+	}
+	
+	public boolean onResponse(Response response) {
+		boolean ret = false;
+		if (previousRequest != null && response.satisifies(previousRequest)) {
+			ret = true;
+			setImageBitmap(response.bitmap);
 		}
+		return ret;
 	}
 	
 	protected void loadImage() {
@@ -61,46 +66,38 @@ public abstract class AIbexImageView extends ImageView {
 		if (request != null && !request.equals(previousRequest)) {
 			if (previousRequest != null && 
 					request != null && 
-					request.getUniqueKey() != null &&
-					!request.getUniqueKey().equals(previousRequest.getUniqueKey())) {
-				setImageBitmap(null);	
+					request.key != null &&
+					!request.key.equals(previousRequest.key)) {
+				removeImage();
 			}
 			
-			Context context = getContext();
-			if (previousRequest != null) {
-				Intent intent = new Intent();
-				intent.setComponent(getServiceComponentName(context));
-				intent.setAction(ImageLoadingService.ACTION_CANCEL_REQUEST);
-				intent.putExtra(ImageLoadingService.EXTRA_REQUEST, previousRequest);
-				
-				context.startService(intent);
-				previousRequest = null;
+			if (requestManager == null) {
+				requestManager = getRequestManager();
 			}
 			
-			if (imageLoadedReceiver == null) {
-				imageLoadedReceiver = new BroadcastReceiver() {
-					@Override
-					public void onReceive(Context context, Intent intent) {
-						Response response = intent.getParcelableExtra(ImageLoadingService.EXTRA_RESPONSE);
-						if (previousRequest != null && response.satisifies(previousRequest)) {
-							LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(this);
-							imageLoadedReceiver = null;
-							setImageBitmap(response.getBitmap());
-						}
-					}
-				};
-				IntentFilter filter = new IntentFilter(ImageLoadingService.ACTION_IMAGE_LOADED);
-				LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(imageLoadedReceiver, filter);
-			}
+			cancelRequest();
 			
+			requestManager.queue(request);
 			previousRequest = request;
+		}
+	}
+	
+	public void cancelRequest() {
+		if (previousRequest != null) {
+			if (requestManager == null) {
+				requestManager = getRequestManager();
+			}
 			
-			Intent intent = new Intent();
-			intent.setComponent(getServiceComponentName(context));
-			intent.setAction(ImageLoadingService.ACTION_REQUEST_IMAGE);
-			intent.putExtra(ImageLoadingService.EXTRA_REQUEST, request);
-			
-			context.startService(intent);
+			requestManager.cancel(previousRequest);
+			previousRequest = null;
+		}
+	}
+	
+	private void removeImage() {
+		if (defaultDrawableId == 0) {
+			setImageDrawable(null);
+		} else {
+			setImageResource(defaultDrawableId);
 		}
 	}
 }

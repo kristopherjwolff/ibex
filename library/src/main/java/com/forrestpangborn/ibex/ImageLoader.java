@@ -1,15 +1,13 @@
-package com.forrestpangborn.ibex.task;
+package com.forrestpangborn.ibex;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ImageView.ScaleType;
 
 import com.forrestpangborn.ibex.cache.ImageCache;
@@ -18,7 +16,6 @@ import com.forrestpangborn.ibex.data.Response;
 import com.forrestpangborn.ibex.data.Size;
 import com.forrestpangborn.ibex.scaler.DownScaler;
 import com.forrestpangborn.ibex.scaler.DownScaler.DownScaleType;
-import com.forrestpangborn.ibex.service.ImageLoadingService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
@@ -27,55 +24,43 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.common.io.ByteStreams;
 
-public class ImageLoadingTask {
+public class ImageLoader {
 
 	private final Request request;
 	private final ImageCache cache;
 	
-	public ImageLoadingTask(Request request, ImageCache cache) {
+	public ImageLoader(Request request, ImageCache cache) {
 		this.request = request;
 		this.cache = cache;
 	}
 	
-	public boolean load(Context context) {
-		Size size = request.getSize();
-		Size minSize = request.getMinSize();
-		if (minSize == null) {
-			minSize = size;
-		}
-		String url = request.getUrl();
-		Bundle headers = request.getHeaders();
-		ScaleType scaleType = request.getScaleType();
-		String cacheKey = request.getUniqueKey();
-		boolean shouldScale = request.getShouldScale();
+	public Response load(Context context) {
+		Response ret = null;
 		
-		if (url != null && size.isNonZero()) {
+		if (request.url != null && request.size.isNonZero()) {
 			Bitmap bmp = null;
 			if (cache != null) {
-				byte[] cacheData = cache.get(cacheKey);
+				byte[] cacheData = cache.get(request);
 				if (cacheData != null) {
-					bmp = buildScaledBitmap(cacheData, size, scaleType, shouldScale);
+					bmp = buildScaledBitmap(cacheData, request.size, request.scaleType, request.shouldScale);
 				}
 			}
 			
-			if (bmp == null && url != null) {
-				byte[] remoteData = loadImage(url, headers, cacheKey);
+			if (bmp == null && request.url != null) {
+				byte[] remoteData = loadImage(request.url, request.headers, request.key);
 				if (remoteData != null) {
 					if (cache != null) {
-						cache.put(cacheKey, remoteData);
+						cache.put(request, remoteData);
 					}
-					bmp = buildScaledBitmap(remoteData, size, scaleType, shouldScale);
+					bmp = buildScaledBitmap(remoteData, request.size, request.scaleType, request.shouldScale);
 				}
 			}
 			
-			if (bmp != null && bmp.getWidth() >= minSize.width && bmp.getHeight() >= minSize.height) {
-				Intent loadedIntent = new Intent(ImageLoadingService.ACTION_IMAGE_LOADED);
-				loadedIntent.putExtra(ImageLoadingService.EXTRA_RESPONSE, new Response(request, bmp));
-				LocalBroadcastManager.getInstance(context).sendBroadcast(loadedIntent);
-				return true;
+			if (bmp != null && bmp.getWidth() >= request.minSize.width && bmp.getHeight() >= request.minSize.height) {
+				ret = new Response(request, bmp);
 			}
 		}
-		return false;
+		return ret;
 	}
 	
 	private byte[] loadImage(String url, Bundle headers, String key) {

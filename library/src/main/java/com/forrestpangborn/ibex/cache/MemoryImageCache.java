@@ -2,6 +2,7 @@ package com.forrestpangborn.ibex.cache;
 
 import com.forrestpangborn.ibex.data.ByteArrayLinkedHashMap;
 import com.forrestpangborn.ibex.data.ByteArrayLinkedHashMap.OnByteArrayMapEntryRemovedListener;
+import com.forrestpangborn.ibex.data.Request;
 
 public class MemoryImageCache implements ImageCache {
 
@@ -16,12 +17,13 @@ public class MemoryImageCache implements ImageCache {
 	}
 	
 	@Override
-	public void put(String key, byte[] value) {
-		map.put(key, value);
+	public void put(Request request, byte[] value) {
+		map.put(request.key, value);
 	}
 	
-	public byte[] get(String key) {
-		return map.get(key);
+	@Override
+	public byte[] get(Request request) {
+		return map.get(request.key);
 	}
 
 	@Override

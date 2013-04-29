@@ -40,7 +40,7 @@ public abstract class AIbexImageView extends ImageView {
 	}
 	
 	public void clear() {
-		previousRequest = null;
+		cancelRequest();
 		removeImage();
 	}
 	
@@ -59,23 +59,16 @@ public abstract class AIbexImageView extends ImageView {
 		try {
 			request = createRequestBuilder().build();
 		} catch (IllegalStateException ex) {
-			Log.e("Ibex", "Error building request in AIbexImageView.");
+			Log.i("Ibex", "Error building request in AIbexImageView.");
 			request = null;
 		}
 		
 		if (request != null && !request.equals(previousRequest)) {
-			if (previousRequest != null && 
-					request != null && 
-					request.key != null &&
-					!request.key.equals(previousRequest.key)) {
-				removeImage();
-			}
+			clear();
 			
 			if (requestManager == null) {
 				requestManager = getRequestManager();
 			}
-			
-			cancelRequest();
 			
 			requestManager.queue(request);
 			previousRequest = request;

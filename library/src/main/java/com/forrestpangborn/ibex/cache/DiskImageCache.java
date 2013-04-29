@@ -37,7 +37,7 @@ public class DiskImageCache implements ImageCache {
 	
 	@Override
 	public void put(Request request, byte[] data) {
-		if (data != null && request.key != null) {
+		if (data != null && request.key != null && cache != null) {
 			try {
 				Editor editor = cache.edit(request.key);
 				if (editor != null) {
@@ -56,15 +56,17 @@ public class DiskImageCache implements ImageCache {
 	public byte[] get(Request request) {
 		byte[] ret = null;
 		
-		try {
-			Snapshot snapshot = cache.get(request.key);
-			if (snapshot != null) {
-				InputStream input = snapshot.getInputStream(0);
-				ret = ByteStreams.toByteArray(input);
-				input.close();
+		if (cache != null) {
+			try {
+				Snapshot snapshot = cache.get(request.key);
+				if (snapshot != null) {
+					InputStream input = snapshot.getInputStream(0);
+					ret = ByteStreams.toByteArray(input);
+					input.close();
+				}
+			} catch (IOException ex) {
+				ret = null;
 			}
-		} catch (IOException ex) {
-			ret = null;
 		}
 		
 		return ret;
@@ -72,10 +74,12 @@ public class DiskImageCache implements ImageCache {
 
 	@Override
 	public void close() {
-		try {
-			cache.close();
-		} catch (IOException ex) {
-			Log.e("Ibex", "Exception trying to close DiskLruCache!", ex);
+		if (cache != null) {
+			try {
+				cache.close();
+			} catch (IOException ex) {
+				Log.e("Ibex", "Exception trying to close DiskLruCache!", ex);
+			}
 		}
 	}
 }
